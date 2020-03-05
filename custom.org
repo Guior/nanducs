@@ -1,0 +1,77 @@
+* Geral
+** Terminal
+#+BEGIN_SRC emacs-lisp
+(defvar terminalzito "/bin/zsh")
+(defadvice ansi-term (before force-zsh)
+  (interactive (list terminalzito)))
+(ad-activate 'ansi-term)
+#+END_SRC
+Definindo o ZSH como interpretador padrão para o ansi-term.
+
+#+BEGIN_SRC emacs-lisp
+(when (get-buffer "*ansi-term*")
+    (display-line-numbers-mode -1))
+#+END_SRC
+Desativa line number mode para o ansi term.
+** Toolbar
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+#+END_SRC
+Desativa toolbar por motivos de ocupa muito espaço e é inútil.
+** Menubar
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+#+END_SRC
+Desativa menu bar por também ser inútil
+** Scrollbar
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode -1)
+#+END_SRC
+Desativa scroll bar porque não vai ser utilizada.
+** Soft-wrap
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode 1)
+#+END_SRC
+Ativa soft-wrap para melhor visualização do texto.
+** Line number mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+#+END_SRC
+Mostra as linhas de texto globalmente.
+* Org
+** Org Bullets
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+#+END_SRC
+Bullets para deixas o org mode mais bonito.
+* Visual
+** Tema
+#+BEGIN_SRC emacs-lisp
+(use-package darkokai-theme
+    :ensure t
+    :init
+    (load-theme 'darkokai t))
+#+END_SRC
+Seta o tema darkokai como padrão.
+** Spaceline
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+    :ensure t)
+(use-package spaceline-config
+    :ensure spaceline
+    :config
+    (spaceline-emacs-theme))
+#+END_SRC
+Spaceline com tema emacs padrão.
+* Utilidades
+** Which key
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+    :ensure t
+    :config
+    (which-key-mode 1))
+#+END_SRC
+Which-key para listar comandos com C-X. 
