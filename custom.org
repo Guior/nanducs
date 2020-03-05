@@ -7,12 +7,6 @@
 (ad-activate 'ansi-term)
 #+END_SRC
 Definindo o ZSH como interpretador padrão para o ansi-term.
-
-#+BEGIN_SRC emacs-lisp
-(when (get-buffer "*ansi-term*")
-    (display-line-numbers-mode -1))
-#+END_SRC
-Desativa line number mode para o ansi term.
 ** Toolbar
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode -1)
