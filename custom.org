@@ -32,6 +32,11 @@ Ativa soft-wrap para melhor visualização do texto.
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
 #+END_SRC
 Mostra as linhas de texto globalmente.
+#+BEGIN_SRC emacs-lisp
+(custom-set-variables
+    '(tab-width 4))
+#+END_SRC
+Define tab para 4 espaços.
 * Org
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
@@ -69,3 +74,53 @@ Spaceline com tema emacs padrão.
     (which-key-mode 1))
 #+END_SRC
 Which-key para listar comandos com C-X. 
+** Auto Complete
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete
+    :ensure t
+    :init
+    (ac-config-default))
+#+END_SRC
+Pacote de auto-
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+(use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-file-icons t)
+    :init
+    (dashboard-setup-startup-hook))
+#+END_SRC
+Lindo dashboard 
+*** Page break lines
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines
+    :ensure t
+    :init
+    (turn-on-page-break-lines-mode))
+#+END_SRC
+Nem sei o que é isso.
+*** All the icons
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+    :ensure t)
+#+END_SRC
+Autoexplicativo.
+** Yasnippet
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+    :ensure t
+    :config
+    (yas-global-mode 1))
+#+END_SRC
+Snippet para frameworks.
+** Auto complete para M-X
+#+BEGIN_SRC emacs-lisp
+(use-package smex
+  :ensure t
+  :init (smex-initialize)
+  :bind
+  ("M-x" . smex))
+#+END_SRC
+Autoexplicativo.

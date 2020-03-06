@@ -15,9 +15,11 @@ There are two things you can do about this warning:
   )
 (package-initialize)
 
-(org-babel-load-file (expand-file-name "~/.emacs.d/custom.org"))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-(setq tab-width 4) ;; define tab para 4 espaços
+(org-babel-load-file (expand-file-name "~/.emacs.d/custom.org"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
