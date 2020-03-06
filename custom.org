@@ -89,6 +89,7 @@ Pacote de auto-
     :config
     (setq dashboard-set-heading-icons t)
     (setq dashboard-set-file-icons t)
+	(setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
     :init
     (dashboard-setup-startup-hook))
 #+END_SRC
@@ -115,12 +116,16 @@ Autoexplicativo.
     (yas-global-mode 1))
 #+END_SRC
 Snippet para frameworks.
-** Auto complete para M-X
+** Helm
 #+BEGIN_SRC emacs-lisp
-(use-package smex
-  :ensure t
-  :init (smex-initialize)
-  :bind
-  ("M-x" . smex))
+(use-package helm
+    :ensure t
+	:config
+	(helm-mode 1))
 #+END_SRC
-Autoexplicativo.
+Helm para completion.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
