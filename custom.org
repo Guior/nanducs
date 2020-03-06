@@ -81,7 +81,7 @@ Which-key para listar comandos com C-X.
     :init
     (ac-config-default))
 #+END_SRC
-Pacote de auto-
+Pacote de auto-complete
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
@@ -101,7 +101,7 @@ Lindo dashboard
     :init
     (turn-on-page-break-lines-mode))
 #+END_SRC
-Nem sei o que é isso.
+Substitui símbolo de quebras de linha por uma linha vazia.
 *** All the icons
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
@@ -116,6 +116,16 @@ Autoexplicativo.
     (yas-global-mode 1))
 #+END_SRC
 Snippet para frameworks.
+*** Emacs-Lisp snippet
+#+BEGIN_SRC emacs-lisp
+(use-package el-autoyas
+    :ensure t)
+#+END_SRC
+*** Javascript e React snippet 
+#+BEGIN_SRC emacs-lisp
+(use-package js-react-redux-yasnippets
+    :ensure t)
+#+END_SRC
 ** Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -129,3 +139,17 @@ Helm para completion.
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
 #+END_SRC
+Bindings das keys pro helm.
+* Diminish
+#+BEGIN_SRC emacs-lisp
+(use-package diminish
+    :ensure t
+	:init
+	(diminish 'helm-mode)
+	(diminish 'which-key-mode)
+	(diminish 'visual-line-mode)
+	(diminish 'yas-minor-mode)
+	(diminish 'page-break-lines-mode)
+	(diminish 'auto-complete-mode))
+#+END_SRC
+Pacote para esconder os modos da barra
