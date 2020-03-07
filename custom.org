@@ -31,13 +31,18 @@ Ativa soft-wrap para melhor visualização do texto.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
 #+END_SRC
-Mostra as linhas de texto globalmente.
+Mostra as linhas de texto para os buffers em prog-mode.
+
 #+BEGIN_SRC emacs-lisp
 (custom-set-variables
     '(tab-width 4))
 #+END_SRC
 Define tab para 4 espaços.
 * Org
+** Configs
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'org-indent-mode)
+#+END_SRC
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
@@ -74,14 +79,26 @@ Spaceline com tema emacs padrão.
     (which-key-mode 1))
 #+END_SRC
 Which-key para listar comandos com C-X. 
-** Auto Complete
+** Company
 #+BEGIN_SRC emacs-lisp
-(use-package auto-complete
+(use-package company
     :ensure t
-    :init
-    (ac-config-default))
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (with-eval-after-load 'company
+        (add-hook 'prog-mode-hook 'company-mode)))
 #+END_SRC
 Pacote de auto-complete
+
+*** Irony
+#+BEGIN_SRC emacs-lisp
+(use-package company-irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode))
+#+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
@@ -136,10 +153,20 @@ Snippet para frameworks.
 Helm para completion.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files
+(global-set-key (kbd "M-x") 'helm-M-x)            ;; helm-fuzzy-match
+(global-set-key (kbd "M-y") 'helm-show-kill-ring) ;; helm-kill-ring
+(global-set-key (kbd "C-x b") 'helm-mini)         ;; helm-mini
 #+END_SRC
 Bindings das keys pro helm.
+
+** Swipper
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+    :ensure t
+	:bind ("C-s" . swiper))
+#+END_SRC
+Pacote para busca mais inteligente.
 * Diminish
 #+BEGIN_SRC emacs-lisp
 (use-package diminish
@@ -150,6 +177,7 @@ Bindings das keys pro helm.
 	(diminish 'visual-line-mode)
 	(diminish 'yas-minor-mode)
 	(diminish 'page-break-lines-mode)
-	(diminish 'auto-complete-mode))
+	;;(diminish 'company-mode)
+  (diminish 'org-indent-mode))
 #+END_SRC
 Pacote para esconder os modos da barra
