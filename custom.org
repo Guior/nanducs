@@ -81,13 +81,13 @@ Spaceline com tema emacs padrão.
 Which-key para listar comandos com C-X. 
 ** Company
 #+BEGIN_SRC emacs-lisp
-(use-package company
-    :ensure t
-    :config
-    (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 3)
-    (with-eval-after-load 'company
-        (add-hook 'prog-mode-hook 'company-mode)))
+  (use-package company
+      :ensure t
+      :config
+      (setq company-idle-delay 0)
+      (setq company-minimum-prefix-length 3)
+      (with-eval-after-load 'company
+          (add-hook 'prog-mode-hook 'company-mode)))
 #+END_SRC
 Pacote de auto-complete
 
@@ -98,6 +98,54 @@ Pacote de auto-complete
     :config
     (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'c-mode-hook 'irony-mode))
+#+END_SRC
+** Yasnippet
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+        :ensure t)
+    (yas-reload-all)
+    (yas-global-mode 1))
+#+END_SRC
+Snippet para frameworks.
+*** Lisp snippet
+#+BEGIN_SRC emacs-lisp
+(use-package common-lisp-snippets
+    :ensure t)
+(add-hook 'lisp-mode-hook 'yas-minor-mode)
+#+END_SRC
+*** Javascript e React snippet 
+#+BEGIN_SRC emacs-lisp
+(use-package js-react-redux-yasnippets
+    :ensure t)
+#+END_SRC
+** Company+Yasnippet
+#+BEGIN_SRC emacs-lisp
+(defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "->") t nil)))))
+
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+        (minibuffer-complete)
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (company-complete-common)
+            (indent-for-tab-command)))))
+
+  (global-set-key [tab] 'tab-indent-or-complete)
 #+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
@@ -125,24 +173,6 @@ Substitui símbolo de quebras de linha por uma linha vazia.
     :ensure t)
 #+END_SRC
 Autoexplicativo.
-** Yasnippet
-#+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-    :ensure t
-    :config
-    (yas-global-mode 1))
-#+END_SRC
-Snippet para frameworks.
-*** Emacs-Lisp snippet
-#+BEGIN_SRC emacs-lisp
-(use-package el-autoyas
-    :ensure t)
-#+END_SRC
-*** Javascript e React snippet 
-#+BEGIN_SRC emacs-lisp
-(use-package js-react-redux-yasnippets
-    :ensure t)
-#+END_SRC
 ** Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -180,4 +210,4 @@ Pacote para busca mais inteligente.
 	;;(diminish 'company-mode)
   (diminish 'org-indent-mode))
 #+END_SRC
-Pacote para esconder os modos da barra
+Pacote para esconder os modos da 
