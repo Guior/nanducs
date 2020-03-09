@@ -32,12 +32,26 @@ Ativa soft-wrap para melhor visualização do texto.
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
 #+END_SRC
 Mostra as linhas de texto para os buffers em prog-mode.
-
+** Tab
 #+BEGIN_SRC emacs-lisp
 (custom-set-variables
     '(tab-width 4))
 #+END_SRC
 Define tab para 4 espaços.
+* Bindings
+** Kill buffer and window
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x j") 'kill-buffer-and-window)
+#+END_SRC
+** Abrir terminal 
+#+BEGIN_SRC emacs-lisp
+(defun split-and-open-terminal () 
+    (interactive)
+    (call-interactively 'split-window-right)
+    (call-interactively 'other-window)
+    (call-interactively 'ansi-term))
+(global-set-key (kbd "C-x t") 'split-and-open-terminal)
+#+END_SRC
 * Org
 ** Configs
 #+BEGIN_SRC emacs-lisp
@@ -70,6 +84,32 @@ Seta o tema darkokai como padrão.
     (spaceline-emacs-theme))
 #+END_SRC
 Spaceline com tema emacs padrão.
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+(use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-file-icons t)
+	(setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
+    :init
+    (dashboard-setup-startup-hook))
+#+END_SRC
+Lindo dashboard 
+*** Page break lines
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines
+    :ensure t
+    :init
+    (turn-on-page-break-lines-mode))
+#+END_SRC
+Substitui símbolo de quebras de linha por uma linha vazia.
+*** All the icons
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+    :ensure t)
+#+END_SRC
+Autoexplicativo.
 * Utilidades
 ** Which key
 #+BEGIN_SRC emacs-lisp
@@ -116,6 +156,13 @@ Snippet para frameworks.
     :ensure t)
 (add-hook 'lisp-mode-hook 'yas-minor-mode)
 #+END_SRC
+*** Emacs-Lisp snippet
+#+BEGIN_SRC emacs-lisp
+  (use-package el-autoyas
+    :ensure t
+    :config
+    (add-hook 'org-mode 'el-autoyas-enable))
+#+END_SRC
 *** Javascript e React snippet 
 #+BEGIN_SRC emacs-lisp
 (use-package js-react-redux-yasnippets
@@ -147,32 +194,7 @@ Snippet para frameworks.
 
   (global-set-key [tab] 'tab-indent-or-complete)
 #+END_SRC
-** Dashboard
-#+BEGIN_SRC emacs-lisp
-(use-package dashboard
-    :ensure t
-    :config
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-set-file-icons t)
-	(setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
-    :init
-    (dashboard-setup-startup-hook))
-#+END_SRC
-Lindo dashboard 
-*** Page break lines
-#+BEGIN_SRC emacs-lisp
-(use-package page-break-lines
-    :ensure t
-    :init
-    (turn-on-page-break-lines-mode))
-#+END_SRC
-Substitui símbolo de quebras de linha por uma linha vazia.
-*** All the icons
-#+BEGIN_SRC emacs-lisp
-(use-package all-the-icons
-    :ensure t)
-#+END_SRC
-Autoexplicativo.
+Funções para integração do company com yasnippet.
 ** Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -180,7 +202,7 @@ Autoexplicativo.
 	:config
 	(helm-mode 1))
 #+END_SRC
-Helm para completion.
+Helm para funções de busca..
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files
@@ -197,6 +219,12 @@ Bindings das keys pro helm.
 	:bind ("C-s" . swiper))
 #+END_SRC
 Pacote para busca mais inteligente.
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
+Pacote para integração com o git.
 * Diminish
 #+BEGIN_SRC emacs-lisp
 (use-package diminish
@@ -210,4 +238,6 @@ Pacote para busca mais inteligente.
 	;;(diminish 'company-mode)
   (diminish 'org-indent-mode))
 #+END_SRC
-Pacote para esconder os modos da 
+
+Pacote para esconder os modos da
+  
