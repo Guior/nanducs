@@ -225,6 +225,19 @@ Pacote para busca mais inteligente.
     :ensure t)
 #+END_SRC
 Pacote para integração com o git.
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode))
+#+END_SRC
+Detecção e highlightning de erros.
+
+*** C++ 
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+#+END_SRC
 * Diminish
 #+BEGIN_SRC emacs-lisp
 (use-package diminish
@@ -235,7 +248,7 @@ Pacote para integração com o git.
 	(diminish 'visual-line-mode)
 	(diminish 'yas-minor-mode)
 	(diminish 'page-break-lines-mode)
-	;;(diminish 'company-mode)
+	(diminish 'company-mode)
   (diminish 'org-indent-mode))
 #+END_SRC
 
