@@ -1,10 +1,12 @@
 * Geral
 ** Terminal
 #+BEGIN_SRC emacs-lisp
-(defvar terminalzito "/bin/zsh")
-(defadvice ansi-term (before force-zsh)
-  (interactive (list terminalzito)))
-(ad-activate 'ansi-term)
+  (defvar terminalzito "/bin/zsh")
+  (defadvice ansi-term (before force-zsh)
+    (interactive (list terminalzito)))
+  (ad-activate 'ansi-term)
+
+
 #+END_SRC
 Definindo o ZSH como interpretador padrão para o ansi-term.
 ** Toolbar
@@ -38,6 +40,11 @@ Mostra as linhas de texto para os buffers em prog-mode.
     '(tab-width 4))
 #+END_SRC
 Define tab para 4 espaços.
+** Y-or-n-p
+#+BEGIN_SRC emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+Alias para simplificar confirmações.
 * Bindings
 ** Kill buffer and window
 #+BEGIN_SRC emacs-lisp
@@ -141,13 +148,13 @@ Pacote de auto-complete
 #+END_SRC
 ** Yasnippet
 #+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-    :ensure t
-    :config
-    (use-package yasnippet-snippets
-        :ensure t)
-    (yas-reload-all)
-    (yas-global-mode 1))
+  (use-package yasnippet
+      :ensure t
+      :config
+      (use-package yasnippet-snippets
+          :ensure t)
+      (yas-reload-all)
+      (add-hook 'prog-mode-hook #'yas-minor-mode))
 #+END_SRC
 Snippet para frameworks.
 *** Lisp snippet
@@ -181,18 +188,6 @@ Snippet para frameworks.
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
       (yas/expand)))
-
-  (defun tab-indent-or-complete ()
-    (interactive)
-    (if (minibufferp)
-        (minibuffer-complete)
-      (if (or (not yas/minor-mode)
-              (null (do-yas-expand)))
-          (if (check-expansion)
-              (company-complete-common)
-            (indent-for-tab-command)))))
-
-  (global-set-key [tab] 'tab-indent-or-complete)
 #+END_SRC
 Funções para integração do company com yasnippet.
 ** Helm
@@ -214,9 +209,9 @@ Bindings das keys pro helm.
 
 ** Swipper
 #+BEGIN_SRC emacs-lisp
-(use-package swiper
-    :ensure t
-	:bind ("C-s" . swiper))
+  (use-package swiper
+      :ensure t
+      :bind ("C-s" . swiper))
 #+END_SRC
 Pacote para busca mais inteligente.
 ** Magit
