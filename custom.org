@@ -147,6 +147,19 @@ Pacote de auto-complete
     (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'c-mode-hook 'irony-mode))
 #+END_SRC
+
+*** Jedi
+#+BEGIN_SRC emacs-lisp
+  (use-package company-jedi
+    :config
+    (setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (setq jedi:complete-on-dot t)
+    (setq jedi:use-shortcuts t)
+    (defun config/enable-company-jedi ()
+      (add-to-list 'company-backends 'company-jedi))
+    (add-hook 'python-mode-hook 'config/enable-company-jedi))
+#+END_SRC
 ** Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -243,18 +256,35 @@ Detecção e highlightning de erros.
 #+END_SRC
 
 Pacote para highlight em escopos
+** Undo Tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :config
+    (global-undo-tree-mode)
+    (setq-default undo-tree-visualizer-diff 1)
+    (setq-default undo-tree-auto-save-history 1) 
+    (setq-default undo-tree-visualizer-timestamps 1)
+    (defadvice undo-tree-make-history-save-file-name
+        (after undo-tree activate)
+  (setq ad-return-value (concat ad-return-value ".gz"))))
+#+END_SRC
+Pacote que define o histórico de alterações em uma árvore.
 * Diminish
 #+BEGIN_SRC emacs-lisp
-(use-package diminish
-    :ensure t
-	:init
-	(diminish 'helm-mode)
-	(diminish 'which-key-mode)
-	(diminish 'visual-line-mode)
-	(diminish 'yas-minor-mode)
-	(diminish 'page-break-lines-mode)
-	(diminish 'company-mode)
-  (diminish 'org-indent-mode))
+  (use-package diminish
+      :ensure t
+      :init
+      (diminish 'helm-mode)
+      (diminish 'which-key-mode)
+      (diminish 'visual-line-mode)
+      (diminish 'yas-minor-mode)
+      (diminish 'page-break-lines-mode)
+      (diminish 'company-mode)
+      (diminish 'org-indent-mode)
+      (diminish 'undo-tree-mode)
+      (diminish 'irony-mode)
+      (diminish 'abbrev-mode))
 #+END_SRC
 
 Pacote para esconder os modos da
