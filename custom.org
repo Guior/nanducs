@@ -1,99 +1,97 @@
 * Geral
 ** Terminal
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defvar terminalzito "/bin/zsh")
   (defadvice ansi-term (before force-zsh)
 	(interactive (list terminalzito)))
   (ad-activate 'ansi-term)
-
-
-#+END_SRC
+#+end_src
 Definindo o ZSH como interpretador padrão para o ansi-term.
 ** Toolbar
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (tool-bar-mode -1)
-#+END_SRC
+#+end_src
 Desativa toolbar por motivos de ocupa muito espaço e é inútil.
 ** Menubar
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (menu-bar-mode -1)
-#+END_SRC
+#+end_src
 Desativa menu bar por também ser inútil
 ** Scrollbar
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (scroll-bar-mode -1)
-#+END_SRC
+#+end_src
 Desativa scroll bar porque não vai ser utilizada.
 ** Soft-wrap
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (global-visual-line-mode 1)
-#+END_SRC
+#+end_src
 Ativa soft-wrap para melhor visualização do texto.
 ** Line number mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
-#+END_SRC
+#+end_src
 Mostra as linhas de texto para os buffers em prog-mode.
 ** Tab
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq-default c-basic-offset 4 
                 tab-width 4
                 indent-tabs-mode t)
-#+END_SRC
+#+end_src
 Define tab para 4 espaços.
 ** Y-or-n-p
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+#+end_src
 Alias para simplificar confirmações.
 * Bindings
 ** Kill buffer and window
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "C-x j") 'kill-buffer-and-window)
-#+END_SRC
+#+end_src
 ** Abrir terminal 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun split-and-open-terminal () 
     (interactive)
     (call-interactively 'split-window-right)
     (call-interactively 'other-window)
     (call-interactively 'ansi-term))
 (global-set-key (kbd "C-x t") 'split-and-open-terminal)
-#+END_SRC
+#+end_src
 * Org
 ** Configs
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
-#+END_SRC
+#+end_src
 ** Org Bullets
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org-bullets
     :ensure t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
-#+END_SRC
+#+end_src
 Bullets para deixas o org mode mais bonito.
 * Visual
 ** Tema
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package darkokai-theme
     :ensure t
     :init
     (load-theme 'darkokai t))
-#+END_SRC
+#+end_src
 Seta o tema darkokai como padrão.
 ** Spaceline
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package spaceline
     :ensure t)
 (use-package spaceline-config
     :ensure spaceline
     :config
     (spaceline-emacs-theme))
-#+END_SRC
+#+end_src
 Spaceline com tema emacs padrão.
 ** Dashboard
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dashboard
     :ensure t
     :config
@@ -102,33 +100,33 @@ Spaceline com tema emacs padrão.
 	(setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
     :init
     (dashboard-setup-startup-hook))
-#+END_SRC
+#+end_src
 Lindo dashboard 
 *** Page break lines
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package page-break-lines
     :ensure t
     :init
     (turn-on-page-break-lines-mode))
-#+END_SRC
+#+end_src
 Substitui símbolo de quebras de linha por uma linha vazia.
 *** All the icons
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package all-the-icons
     :ensure t)
-#+END_SRC
+#+end_src
 Autoexplicativo.
 * Utilidades
 ** Which key
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package which-key
     :ensure t
     :config
     (which-key-mode 1))
-#+END_SRC
+#+end_src
 Which-key para listar comandos com C-X. 
 ** Company
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package company
       :ensure t
       :config
@@ -136,20 +134,20 @@ Which-key para listar comandos com C-X.
       (setq company-minimum-prefix-length 3)
       (with-eval-after-load 'company
           (add-hook 'prog-mode-hook 'company-mode)))
-#+END_SRC
+#+end_src
 Pacote de auto-complete
 
 *** Irony
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package company-irony
     :ensure t
     :config
     (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'c-mode-hook 'irony-mode))
-#+END_SRC
+#+end_src
 
 *** Jedi
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package company-jedi
     :config
     (setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
@@ -159,9 +157,9 @@ Pacote de auto-complete
     (defun config/enable-company-jedi ()
       (add-to-list 'company-backends 'company-jedi))
     (add-hook 'python-mode-hook 'config/enable-company-jedi))
-#+END_SRC
+#+end_src
 ** Yasnippet
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package yasnippet
       :ensure t
       :config
@@ -169,28 +167,28 @@ Pacote de auto-complete
           :ensure t)
       (yas-reload-all)
       (add-hook 'prog-mode-hook #'yas-minor-mode))
-#+END_SRC
+#+end_src
 Snippet para frameworks.
 *** Lisp snippet
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package common-lisp-snippets
     :ensure t)
 (add-hook 'lisp-mode-hook 'yas-minor-mode)
-#+END_SRC
+#+end_src
 *** Emacs-Lisp snippet
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package el-autoyas
     :ensure t
     :config
     (add-hook 'org-mode 'el-autoyas-enable))
-#+END_SRC
+#+end_src
 *** Javascript e React snippet 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package js-react-redux-yasnippets
     :ensure t)
-#+END_SRC
+#+end_src
 ** Company+Yasnippet
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun check-expansion ()
     (save-excursion
       (if (looking-at "\\_>") t
@@ -202,76 +200,73 @@ Snippet para frameworks.
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
       (yas/expand)))
-#+END_SRC
+#+end_src
 Funções para integração do company com yasnippet.
 ** Helm
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package helm
     :ensure t
 	:config
 	(helm-mode 1))
-#+END_SRC
+#+end_src
 Helm para funções de busca..
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files
 (global-set-key (kbd "M-x") 'helm-M-x)            ;; helm-fuzzy-match
 (global-set-key (kbd "M-y") 'helm-show-kill-ring) ;; helm-kill-ring
 (global-set-key (kbd "C-x b") 'helm-mini)         ;; helm-mini
-#+END_SRC
+#+end_src
 Bindings das keys pro helm.
 
 ** Swipper
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package swiper
       :ensure t
       :bind ("C-s" . swiper))
-#+END_SRC
+#+end_src
 Pacote para busca mais inteligente.
 ** Magit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package magit
     :ensure t)
-#+END_SRC
+#+end_src
 Pacote para integração com o git.
 ** Flycheck
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package flycheck
     :ensure t
     :init
     (global-flycheck-mode))
-#+END_SRC
+#+end_src
 Detecção e highlightning de erros.
 
 *** C++ 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
-#+END_SRC
+#+end_src
 ** Rainbow Delimiters
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :ensure t
     :config 
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-#+END_SRC
+#+end_src
 
 Pacote para highlight em escopos
 ** Undo Tree
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package undo-tree
     :ensure t
     :config
     (global-undo-tree-mode)
     (setq-default undo-tree-visualizer-diff 1)
     (setq-default undo-tree-auto-save-history 1) 
-    (setq-default undo-tree-visualizer-timestamps 1)
-    (defadvice undo-tree-make-history-save-file-name
-        (after undo-tree activate)
-  (setq ad-return-value (concat ad-return-value ".gz"))))
-#+END_SRC
+    (setq-default undo-tree-visualizer-timestamps 1))
+#+end_src
 Pacote que define o histórico de alterações em uma árvore.
 * Diminish
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package diminish
       :ensure t
       :init
@@ -285,7 +280,7 @@ Pacote que define o histórico de alterações em uma árvore.
       (diminish 'undo-tree-mode)
       (diminish 'irony-mode)
       (diminish 'abbrev-mode))
-#+END_SRC
+#+end_src
 
 Pacote para esconder os modos da
   

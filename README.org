@@ -1,0 +1,10 @@
+#+TITLE: nanducs
+Minhas configurações para Emacs.
+* Instruções
+1. Copiar custom.org e init.el para ~/.emacs
+2. Executar: M-x all-the-icons-install-fonts
+3. Instalar virtualenv com pip
+4. Executar jedi:install-server
+* Bindings
+	*C-x j* : kill-buffer-and-window 
+	*C-x t* : abre o termina em uma nova window
