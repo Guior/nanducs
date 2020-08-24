@@ -11,17 +11,24 @@ Definindo o ZSH como interpretador padrão para o ansi-term.
 #+begin_src emacs-lisp
 (tool-bar-mode -1)
 #+end_src
-Desativa toolbar por motivos de ocupa muito espaço e é inútil.
+Desativa toolbar para preservar espaço.
 ** Menubar
 #+begin_src emacs-lisp
 (menu-bar-mode -1)
 #+end_src
-Desativa menu bar por também ser inútil
+Desativa menu bar por também para preservar espaço.
 ** Scrollbar
 #+begin_src emacs-lisp
 (scroll-bar-mode -1)
 #+end_src
 Desativa scroll bar porque não vai ser utilizada.
+** Scroll mode
+#+begin_src emacs-lisp
+  (setq scroll-conservatively 100)
+#+end_src
+
+Muda o comportamento padrão de mover uma porção da página ao chegar
+no final para mover uma linha por vez. 
 ** Soft-wrap
 #+begin_src emacs-lisp
 (global-visual-line-mode 1)
@@ -57,6 +64,10 @@ Alias para simplificar confirmações.
     (call-interactively 'other-window)
     (call-interactively 'ansi-term))
 (global-set-key (kbd "C-x t") 'split-and-open-terminal)
+#+end_src
+** Switch window
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<C-tab>") 'other-window)
 #+end_src
 * Org
 ** Configs
@@ -265,6 +276,14 @@ Pacote para highlight em escopos
     (setq-default undo-tree-visualizer-timestamps 1))
 #+end_src
 Pacote que define o histórico de alterações em uma árvore.
+** Rainbow Mode
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init (rainbow-mode 1)) 
+#+end_src
+
+Pacote para hightlight de cores em código hexadecimal
 * Diminish
 #+begin_src emacs-lisp
   (use-package diminish
