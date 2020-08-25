@@ -16,7 +16,7 @@ Desativa toolbar para preservar espaço.
 #+begin_src emacs-lisp
 (menu-bar-mode -1)
 #+end_src
-Desativa menu bar por também para preservar espaço.
+Desativa menu bar também para preservar espaço.
 ** Scrollbar
 #+begin_src emacs-lisp
 (scroll-bar-mode -1)
@@ -36,9 +36,9 @@ no final para mover uma linha por vez.
 Ativa soft-wrap para melhor visualização do texto.
 ** Line number mode
 #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+(global-display-line-numbers-mode 1)
 #+end_src
-Mostra as linhas de texto para os buffers em prog-mode.
+Mostra as linhas de texto globalmente.
 ** Tab
 #+begin_src emacs-lisp
   (setq-default c-basic-offset 4 
@@ -51,6 +51,23 @@ Define tab para 4 espaços.
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 Alias para simplificar confirmações.
+** Subword
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook (lambda () (subword-mode 1)))
+#+end_src
+
+Subword trata uppercase no meio de uma string como palavras separadas ao navegar.
+** Pair-complete
+#+begin_src emacs-lisp
+  (setq electric-pair-pairs '(
+                              (?\( . ?\))
+                              (?\[ . ?\])
+                              (?\{ . ?\})
+                              ))
+  (electric-pair-mode t)
+#+end_src
+
+Autocompleta parênteses, chaves e colchetes.
 * Bindings
 ** Kill buffer and window
 #+begin_src emacs-lisp
@@ -71,9 +88,17 @@ Alias para simplificar confirmações.
 #+end_src
 * Org
 ** Configs
+*** Org indent mode
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
+
+*** Source window 
+#+begin_src emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+end_src
+
+Abre source window (C-c ') na mesma janela.
 ** Org Bullets
 #+begin_src emacs-lisp
 (use-package org-bullets
@@ -229,14 +254,12 @@ Helm para funções de busca..
 (global-set-key (kbd "C-x b") 'helm-mini)         ;; helm-mini
 #+end_src
 Bindings das keys pro helm.
-
-** Swipper
+*** Swiper-helm
 #+begin_src emacs-lisp
-  (use-package swiper
-      :ensure t
-      :bind ("C-s" . swiper))
+(use-package swiper-helm
+    :ensure t
+    :bind ("C-s" . swiper-helm))
 #+end_src
-Pacote para busca mais inteligente.
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit

@@ -6,6 +6,6 @@ Minhas configurações para Emacs.
 3. Instalar virtualenv com pip
 4. Executar jedi:install-server
 * Bindings
-	* *C-x j* : kill-buffer-and-window 
-	* *C-x t* : abre o termina em uma nova window
-  * *C-tab* : switch window
+	- *C-x j* : kill-buffer-and-window 
+	- *C-x t* : abre o termina em uma nova window
+  - *C-tab* : switch window
