@@ -36,9 +36,9 @@ no final para mover uma linha por vez.
 Ativa soft-wrap para melhor visualização do texto.
 ** Line number mode
 #+begin_src emacs-lisp
-(global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode)))
 #+end_src
-Mostra as linhas de texto globalmente.
+Mostra as linhas de texto para buffers em prog mode, pois em buffers específicos, como ansi-term, sua utilização causa problemas.
 ** Tab
 #+begin_src emacs-lisp
   (setq-default c-basic-offset 4 
@@ -68,6 +68,13 @@ Subword trata uppercase no meio de uma string como palavras separadas ao navegar
 #+end_src
 
 Autocompleta parênteses, chaves e colchetes.
+** Diretório de autosave
+#+begin_src emacs-lisp
+  (setq backup-directory-alist
+            `(("." . ,(concat user-emacs-directory ".backups"))))
+#+end_src
+
+Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 * Bindings
 ** Kill buffer and window
 #+begin_src emacs-lisp
@@ -107,6 +114,15 @@ Abre source window (C-c ') na mesma janela.
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
 #+end_src
 Bullets para deixas o org mode mais bonito.
+** PlantUML
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :ensure t
+    :config
+    (setq org-plantuml-jar-path (expand-file-name "~/Downloads/plantuml.jar"))
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
 * Visual
 ** Tema
 #+begin_src emacs-lisp
@@ -128,16 +144,22 @@ Seta o tema darkokai como padrão.
 Spaceline com tema emacs padrão.
 ** Dashboard
 #+begin_src emacs-lisp
-(use-package dashboard
-    :ensure t
-    :config
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-set-file-icons t)
-	(setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
-    :init
-    (dashboard-setup-startup-hook))
+  (use-package dashboard
+      :ensure t
+      :config
+      (setq dashboard-set-heading-icons t)
+      (setq dashboard-set-file-icons t)
+      (setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
+      :init
+      (dashboard-setup-startup-hook))
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
 Lindo dashboard 
+*** Configs agenda
+#+begin_src emacs-lisp
+(setq org-agenda-files (quote ("~/Dropbox/emacsAgenda.org")))
+(setq show-week-agenda-p t)
+#+end_src
 *** Page break lines
 #+begin_src emacs-lisp
 (use-package page-break-lines
@@ -179,7 +201,8 @@ Pacote de auto-complete
     :ensure t
     :config
     (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode))
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 #+end_src
 
 *** Jedi
@@ -254,11 +277,11 @@ Helm para funções de busca..
 (global-set-key (kbd "C-x b") 'helm-mini)         ;; helm-mini
 #+end_src
 Bindings das keys pro helm.
-*** Swiper-helm
+*** Helm-swooper
 #+begin_src emacs-lisp
-(use-package swiper-helm
+  (use-package helm-swoop
     :ensure t
-    :bind ("C-s" . swiper-helm))
+    :bind ("C-s" . helm-swoop))
 #+end_src
 ** Magit
 #+begin_src emacs-lisp
@@ -294,7 +317,6 @@ Pacote para highlight em escopos
     :ensure t
     :config
     (global-undo-tree-mode)
-    (setq-default undo-tree-visualizer-diff 1)
     (setq-default undo-tree-auto-save-history 1) 
     (setq-default undo-tree-visualizer-timestamps 1))
 #+end_src
@@ -303,26 +325,34 @@ Pacote que define o histórico de alterações em uma árvore.
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :init (rainbow-mode 1)) 
+    :init (add-hook 'prog-mode-hook 'rainbow-mode)) 
 #+end_src
 
-Pacote para hightlight de cores em código hexadecimal
+Pacote para hightlight de cores em código hexadecimal.
+** Expand region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind ("C-q" . er/expand-region))
+#+end_src
 * Diminish
 #+begin_src emacs-lisp
-  (use-package diminish
-      :ensure t
-      :init
-      (diminish 'helm-mode)
-      (diminish 'which-key-mode)
-      (diminish 'visual-line-mode)
-      (diminish 'yas-minor-mode)
-      (diminish 'page-break-lines-mode)
-      (diminish 'company-mode)
-      (diminish 'org-indent-mode)
-      (diminish 'undo-tree-mode)
-      (diminish 'irony-mode)
-      (diminish 'abbrev-mode))
+    (use-package diminish
+        :ensure t
+        :init
+        (diminish 'helm-mode)
+        (diminish 'which-key-mode)
+        (diminish 'visual-line-mode)
+        (diminish 'yas-minor-mode)
+        (diminish 'page-break-lines-mode)
+        (diminish 'company-mode)
+        (diminish 'org-indent-mode)
+        (diminish 'undo-tree-mode)
+        (diminish 'irony-mode)
+        (diminish 'abbrev-mode)
+        (diminish 'subword-mode)
+        (diminish 'rainbow-mode)
+        (diminish 'subword-mode))
 #+end_src
 
-Pacote para esconder os modos da
-  
+Pacote para esconder os modos da bar.
