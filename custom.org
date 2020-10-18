@@ -106,6 +106,14 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 #+end_src
 
 Abre source window (C-c ') na mesma janela.
+** Babel
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (plantuml . t)
+     (ditaa . t)))
+#+end_src
 ** Org Bullets
 #+begin_src emacs-lisp
 (use-package org-bullets
@@ -114,14 +122,43 @@ Abre source window (C-c ') na mesma janela.
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
 #+end_src
 Bullets para deixas o org mode mais bonito.
+** Minted 
+#+begin_src emacs-lisp
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+#+end_src
+
+Define Minted como pacote padrão para export de códigos, substituindo Verbatim.
 ** PlantUML
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :ensure t
     :config
     (setq org-plantuml-jar-path (expand-file-name "~/Downloads/plantuml.jar"))
-    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+#+end_src
+** Org-roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+        :ensure t
+        :custom
+        (org-roam-directory "~/Dropbox/org-roam")
+        :hook
+        (after-init . org-roam-mode))
+#+end_src
+** Org-download
+#+begin_src emacs-lisp
+  (use-package org-download
+    :ensure t
+    :custom
+    (org-download-image-dir "./.org-download/")
+    (org-download-screenshot-method "spectacle")
+    :config
+    (add-hook 'dired-mode-hook 'org-download-enable))
 #+end_src
 * Visual
 ** Tema
@@ -175,14 +212,6 @@ Substitui símbolo de quebras de linha por uma linha vazia.
 #+end_src
 Autoexplicativo.
 * Utilidades
-** Which key
-#+begin_src emacs-lisp
-(use-package which-key
-    :ensure t
-    :config
-    (which-key-mode 1))
-#+end_src
-Which-key para listar comandos com C-X. 
 ** Company
 #+begin_src emacs-lisp
   (use-package company
@@ -283,6 +312,27 @@ Bindings das keys pro helm.
     :ensure t
     :bind ("C-s" . helm-swoop))
 #+end_src
+*** Helm-system-packages
+#+begin_src emacs-lisp
+    (use-package helm-system-packages
+      :ensure t)
+#+end_src
+
+Integração do helm com package managers.
+
+*** Helm-descbinds
+#+begin_src emacs-lisp
+  (use-package helm-descbinds
+    :ensure t
+    :config
+    (helm-descbinds-mode 1))
+#+end_src
+
+*** Helm-make
+#+begin_src emacs-lisp
+  (use-package helm-make
+    :ensure t)
+#+end_src
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
@@ -302,6 +352,7 @@ Detecção e highlightning de erros.
 #+begin_src emacs-lisp
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
 #+end_src
+
 ** Rainbow Delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
@@ -341,7 +392,6 @@ Pacote para hightlight de cores em código hexadecimal.
         :ensure t
         :init
         (diminish 'helm-mode)
-        (diminish 'which-key-mode)
         (diminish 'visual-line-mode)
         (diminish 'yas-minor-mode)
         (diminish 'page-break-lines-mode)
@@ -350,7 +400,6 @@ Pacote para hightlight de cores em código hexadecimal.
         (diminish 'undo-tree-mode)
         (diminish 'irony-mode)
         (diminish 'abbrev-mode)
-        (diminish 'subword-mode)
         (diminish 'rainbow-mode)
         (diminish 'subword-mode))
 #+end_src
