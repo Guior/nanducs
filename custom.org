@@ -54,6 +54,8 @@ Alias para simplificar confirmações.
 ** Subword
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (subword-mode 1)))
+  (with-eval-after-load 'subword
+    (diminish 'subword-mode))
 #+end_src
 
 Subword trata uppercase no meio de uma string como palavras separadas ao navegar.
@@ -82,12 +84,12 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 #+end_src
 ** Abrir terminal 
 #+begin_src emacs-lisp
-(defun split-and-open-terminal () 
-    (interactive)
-    (call-interactively 'split-window-right)
-    (call-interactively 'other-window)
-    (call-interactively 'ansi-term))
-(global-set-key (kbd "C-x t") 'split-and-open-terminal)
+  (defun split-and-open-terminal () 
+      (interactive)
+      (call-interactively 'split-window-right)
+      (call-interactively 'other-window)
+      (call-interactively 'ansi-term))
+  (global-set-key (kbd "C-x t") 'split-and-open-terminal)
 #+end_src
 ** Switch window
 #+begin_src emacs-lisp
@@ -137,18 +139,19 @@ Define Minted como pacote padrão para export de códigos, substituindo Verbatim
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :ensure t
+    :custom
+    (org-plantuml-jar-path (expand-file-name "~/Downloads/plantuml.jar"))
     :config
-    (setq org-plantuml-jar-path (expand-file-name "~/Downloads/plantuml.jar"))
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 #+end_src
 ** Org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
-        :ensure t
-        :custom
-        (org-roam-directory "~/Dropbox/org-roam")
-        :hook
-        (after-init . org-roam-mode))
+    :ensure t
+    :custom
+    (org-roam-directory "~/Dropbox/org-roam")
+    :hook
+    (after-init . org-roam-mode))
 #+end_src
 ** Org-download
 #+begin_src emacs-lisp
@@ -161,33 +164,43 @@ Define Minted como pacote padrão para export de códigos, substituindo Verbatim
     (add-hook 'dired-mode-hook 'org-download-enable))
 #+end_src
 * Visual
+** All the icons
+#+begin_src emacs-lisp
+(use-package all-the-icons
+    :ensure t)
+#+end_src
+Autoexplicativo.
 ** Tema
 #+begin_src emacs-lisp
-(use-package darkokai-theme
+  (use-package darkokai-theme
     :ensure t
-    :init
+    :config
     (load-theme 'darkokai t))
 #+end_src
 Seta o tema darkokai como padrão.
 ** Spaceline
 #+begin_src emacs-lisp
-(use-package spaceline
+  (use-package spaceline
     :ensure t)
-(use-package spaceline-config
-    :ensure spaceline
+  (use-package spaceline-all-the-icons
+    :ensure t
+    :after spaceline
+    :custom
+    (spaceline-all-the-icons-separator-type 'arrow)
     :config
-    (spaceline-emacs-theme))
+    (spaceline-all-the-icons-theme))
 #+end_src
-Spaceline com tema emacs padrão.
+Spaceline com tema all the icons.
+
 ** Dashboard
 #+begin_src emacs-lisp
   (use-package dashboard
       :ensure t
+      :custom
+      (dashboard-set-heading-icons t)
+      (dashboard-set-file-icons t)
+      (dashboard-startup-banner "~/.emacs.d/img/banner.png")
       :config
-      (setq dashboard-set-heading-icons t)
-      (setq dashboard-set-file-icons t)
-      (setq dashboard-startup-banner "~/.emacs.d/img/banner.png")
-      :init
       (dashboard-setup-startup-hook))
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
@@ -199,28 +212,22 @@ Lindo dashboard
 #+end_src
 *** Page break lines
 #+begin_src emacs-lisp
-(use-package page-break-lines
+  (use-package page-break-lines
     :ensure t
     :init
     (turn-on-page-break-lines-mode))
 #+end_src
 Substitui símbolo de quebras de linha por uma linha vazia.
-*** All the icons
-#+begin_src emacs-lisp
-(use-package all-the-icons
-    :ensure t)
-#+end_src
-Autoexplicativo.
 * Utilidades
 ** Company
 #+begin_src emacs-lisp
   (use-package company
-      :ensure t
-      :config
-      (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 3)
-      (with-eval-after-load 'company
-          (add-hook 'prog-mode-hook 'company-mode)))
+    :ensure t
+    :custom
+    (company-idle-delay 0)
+    (company-minimum-prefix-length 3)
+    :hook
+    (prog-mode . company-mode))
 #+end_src
 Pacote de auto-complete
 
@@ -237,24 +244,28 @@ Pacote de auto-complete
 *** Jedi
 #+begin_src emacs-lisp
   (use-package company-jedi
+    :ensure t
+    :custom
+    (jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
+    (jedi:complete-on-dot t)
+    (jedi:use-shortcuts t)
     :config
-    (setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
-    (add-hook 'python-mode-hook 'jedi:setup)
-    (setq jedi:complete-on-dot t)
-    (setq jedi:use-shortcuts t)
     (defun config/enable-company-jedi ()
       (add-to-list 'company-backends 'company-jedi))
-    (add-hook 'python-mode-hook 'config/enable-company-jedi))
+    :hook
+    (python-mode . jedi:setup)
+    (python-mode . config/enable-company-jedi))
 #+end_src
 ** Yasnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
-      :ensure t
-      :config
-      (use-package yasnippet-snippets
-          :ensure t)
-      (yas-reload-all)
-      (add-hook 'prog-mode-hook #'yas-minor-mode))
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+      :ensure t)
+    (yas-reload-all)
+    :hook
+    (prog-mode . yas-minor-mode))
 #+end_src
 Snippet para frameworks.
 *** Lisp snippet
@@ -267,8 +278,8 @@ Snippet para frameworks.
 #+begin_src emacs-lisp
   (use-package el-autoyas
     :ensure t
-    :config
-    (add-hook 'org-mode 'el-autoyas-enable))
+    :hook
+    (org-mode . el-autoyas-enable))
 #+end_src
 *** Javascript e React snippet 
 #+begin_src emacs-lisp
@@ -292,10 +303,10 @@ Snippet para frameworks.
 Funções para integração do company com yasnippet.
 ** Helm
 #+begin_src emacs-lisp
-(use-package helm
+  (use-package helm
     :ensure t
-	:config
-	(helm-mode 1))
+    :config
+    (helm-mode 1))
 #+end_src
 Helm para funções de busca..
 
@@ -310,8 +321,16 @@ Bindings das keys pro helm.
 #+begin_src emacs-lisp
   (use-package helm-swoop
     :ensure t
+    :custom
+    (helm-swoop-pre-input-function
+     (lambda ()
+       (if mark-active
+           (buffer-substring-no-properties (mark) (point))
+         "")))
     :bind ("C-s" . helm-swoop))
 #+end_src
+
+Pacote de busca de palavras.
 *** Helm-system-packages
 #+begin_src emacs-lisp
     (use-package helm-system-packages
@@ -333,6 +352,8 @@ Integração do helm com package managers.
   (use-package helm-make
     :ensure t)
 #+end_src
+
+Interface para criar makefiles através do Helm.
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
@@ -343,22 +364,22 @@ Pacote para integração com o git.
 #+begin_src emacs-lisp
   (use-package flycheck
     :ensure t
-    :init
+    :config
     (global-flycheck-mode))
 #+end_src
 Detecção e highlightning de erros.
 
 *** C++ 
 #+begin_src emacs-lisp
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
 #+end_src
 
 ** Rainbow Delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :ensure t
-    :config 
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+    :hook 
+    (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 Pacote para highlight em escopos
@@ -366,17 +387,21 @@ Pacote para highlight em escopos
 #+begin_src emacs-lisp
   (use-package undo-tree
     :ensure t
+    :diminish undo-tree-mode
+    :custom
+    (undo-tree-visualizer-timestamps 1)
     :config
-    (global-undo-tree-mode)
-    (setq-default undo-tree-auto-save-history 1) 
-    (setq-default undo-tree-visualizer-timestamps 1))
+    (global-undo-tree-mode))
 #+end_src
+
 Pacote que define o histórico de alterações em uma árvore.
 ** Rainbow Mode
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :init (add-hook 'prog-mode-hook 'rainbow-mode)) 
+    :diminish rainbow-mode
+    :hook
+    (prog-mode . rainbow-mode)) 
 #+end_src
 
 Pacote para hightlight de cores em código hexadecimal.
@@ -386,22 +411,3 @@ Pacote para hightlight de cores em código hexadecimal.
     :ensure t
     :bind ("C-q" . er/expand-region))
 #+end_src
-* Diminish
-#+begin_src emacs-lisp
-    (use-package diminish
-        :ensure t
-        :init
-        (diminish 'helm-mode)
-        (diminish 'visual-line-mode)
-        (diminish 'yas-minor-mode)
-        (diminish 'page-break-lines-mode)
-        (diminish 'company-mode)
-        (diminish 'org-indent-mode)
-        (diminish 'undo-tree-mode)
-        (diminish 'irony-mode)
-        (diminish 'abbrev-mode)
-        (diminish 'rainbow-mode)
-        (diminish 'subword-mode))
-#+end_src
-
-Pacote para esconder os modos da bar.
