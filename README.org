@@ -11,7 +11,9 @@ Minhas configurações para Emacs.
 |---------+-----------------------------------|
 | *C-x j* | kill-buffer-and-window            |
 | *C-x t* | abre o termina em uma nova window |
-| *C-tab* | switch window                     |
 | *C-q*   | expand region                     |
+| *C-c q* | Mark all like this                |
+| *C->*   | Mark next like this               |
+| *C-<*   | Mark previous like this           |
 |---------+-----------------------------------|
 

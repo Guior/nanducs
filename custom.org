@@ -54,8 +54,6 @@ Alias para simplificar confirmações.
 ** Subword
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (subword-mode 1)))
-  (with-eval-after-load 'subword
-    (diminish 'subword-mode))
 #+end_src
 
 Subword trata uppercase no meio de uma string como palavras separadas ao navegar.
@@ -77,6 +75,7 @@ Autocompleta parênteses, chaves e colchetes.
 #+end_src
 
 Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
+
 * Bindings
 ** Kill buffer and window
 #+begin_src emacs-lisp
@@ -195,21 +194,19 @@ Spaceline com tema all the icons.
 ** Dashboard
 #+begin_src emacs-lisp
   (use-package dashboard
-      :ensure t
-      :custom
-      (dashboard-set-heading-icons t)
-      (dashboard-set-file-icons t)
-      (dashboard-startup-banner "~/.emacs.d/img/banner.png")
-      :config
-      (dashboard-setup-startup-hook))
+	  :ensure t
+	  :custom
+	  (dashboard-set-heading-icons t)
+	  (dashboard-set-file-icons t)
+	  (dashboard-startup-banner "~/.emacs.d/img/banner.png")
+	  (dashboard-center-content t)
+	  (dashboard-items '((recents . 10)
+						 (projects . 5)))
+	  :config
+	  (dashboard-setup-startup-hook))
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
 Lindo dashboard 
-*** Configs agenda
-#+begin_src emacs-lisp
-(setq org-agenda-files (quote ("~/Dropbox/emacsAgenda.org")))
-(setq show-week-agenda-p t)
-#+end_src
 *** Page break lines
 #+begin_src emacs-lisp
   (use-package page-break-lines
@@ -301,6 +298,15 @@ Snippet para frameworks.
       (yas/expand)))
 #+end_src
 Funções para integração do company com yasnippet.
+** Projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :custom
+    (projectile-mode t)
+    :bind
+    ("C-c p" . 'projectile-command-map))
+#+end_src
 ** Helm
 #+begin_src emacs-lisp
   (use-package helm
@@ -354,6 +360,23 @@ Integração do helm com package managers.
 #+end_src
 
 Interface para criar makefiles através do Helm.
+
+*** Helm-projectile
+#+begin_src emacs-lisp
+  (use-package helm-projectile
+    :ensure t
+    :config
+    (helm-projectile-on))
+#+end_src
+
+*** Helm-icons
+#+begin_src emacs-lisp
+  (use-package helm-icons
+    :ensure t
+    :config
+    (helm-icons-enable))
+#+end_src
+
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
@@ -387,7 +410,6 @@ Pacote para highlight em escopos
 #+begin_src emacs-lisp
   (use-package undo-tree
     :ensure t
-    :diminish undo-tree-mode
     :custom
     (undo-tree-visualizer-timestamps 1)
     :config
@@ -399,7 +421,6 @@ Pacote que define o histórico de alterações em uma árvore.
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :diminish rainbow-mode
     :hook
     (prog-mode . rainbow-mode)) 
 #+end_src
@@ -411,3 +432,23 @@ Pacote para hightlight de cores em código hexadecimal.
     :ensure t
     :bind ("C-q" . er/expand-region))
 #+end_src
+** Multiple-cursors
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind ("C->" . 'mc/mark-next-like-this)
+    :bind ("C-<" . 'mc/mark-previous-like-this)
+    :bind ("C-c q" . 'mc/mark-all-like-this))
+#+end_src
+
+Multiple cursors seleciona várias áreas do texto para serem editadas ao mesmo tempo.
+Faz uma boa sinergia com o pacote expand-region.
+
+** Switch-window
+#+begin_src emacs-lisp
+  (use-package switch-window
+    :ensure t
+    :bind
+    ("C-x o" . 'switch-window))
+#+end_src
+
