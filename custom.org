@@ -1,4 +1,4 @@
-* Geral
+﻿* Geral
 ** Terminal
 #+begin_src emacs-lisp
   (defvar terminalzito "/bin/zsh")
@@ -6,11 +6,25 @@
 	(interactive (list terminalzito)))
   (ad-activate 'ansi-term)
 #+end_src
+
 Definindo o ZSH como interpretador padrão para o ansi-term.
+** Images
+#+begin_src emacs-lisp
+  (add-hook 'image-mode-hook '(lambda () (auto-revert-mode)))
+#+end_src
+
+Auto-revert para que as images sejam atualizadas automaticamente em caso de mudança.
+** PDF
+#+begin_src emacs-lisp
+  (add-hook 'pdf-view-mode-hook '(lambda () (auto-revert-mode)))
+#+end_src
+
+Auto-revert para que os arquivos PDF sejam atualizados automaticamente em caso de mudança.
 ** Toolbar
 #+begin_src emacs-lisp
 (tool-bar-mode -1)
 #+end_src
+
 Desativa toolbar para preservar espaço.
 ** Menubar
 #+begin_src emacs-lisp
@@ -33,11 +47,13 @@ no final para mover uma linha por vez.
 #+begin_src emacs-lisp
 (global-visual-line-mode 1)
 #+end_src
+
 Ativa soft-wrap para melhor visualização do texto.
 ** Line number mode
 #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode)))
 #+end_src
+
 Mostra as linhas de texto para buffers em prog mode, pois em buffers específicos, como ansi-term, sua utilização causa problemas.
 ** Tab
 #+begin_src emacs-lisp
@@ -45,11 +61,13 @@ Mostra as linhas de texto para buffers em prog mode, pois em buffers específico
                 tab-width 4
                 indent-tabs-mode t)
 #+end_src
+
 Define tab para 4 espaços.
 ** Y-or-n-p
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
+
 Alias para simplificar confirmações.
 ** Subword
 #+begin_src emacs-lisp
@@ -101,6 +119,8 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 #+end_src
+
+Aumenta o tamanho dos previews do latex em arquivos org em 200%.
 ** Babel
 #+begin_src emacs-lisp
   (add-to-list 'org-src-lang-modes '("c++" . C++)) ;; alias for source
@@ -116,11 +136,12 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 
 ** Org Bullets
 #+begin_src emacs-lisp
-(use-package org-bullets
-    :ensure t
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+  (use-package org-bullets
+      :straight t
+      :hook
+      (org-mode . (lambda () (org-bullets-mode))))
 #+end_src
+
 Bullets para deixas o org mode mais bonito.
 ** Minted
 #+begin_src emacs-lisp
@@ -136,7 +157,7 @@ Define Minted como pacote padrão para export de códigos, substituindo Verbatim
 ** PlantUML
 #+begin_src emacs-lisp
   (use-package plantuml-mode
-    :ensure t
+    :straight t
     :custom
     (org-plantuml-jar-path (expand-file-name "~/Downloads/plantuml.jar"))
     :config
@@ -155,7 +176,7 @@ Define Minted como pacote padrão para export de códigos, substituindo Verbatim
 ** Org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
-    :ensure t
+    :straight t
     :custom
     (org-roam-directory "~/Dropbox/org-roam")
     :hook
@@ -164,135 +185,146 @@ Define Minted como pacote padrão para export de códigos, substituindo Verbatim
 ** Org-download
 #+begin_src emacs-lisp
   (use-package org-download
-    :ensure t
+    :straight t
     :custom
     (org-download-image-dir "./.org-download/")
     (org-download-screenshot-method "spectacle")
-    :config
-    (add-hook 'dired-mode-hook 'org-download-enable))
+    :hook
+    (dired-mode . org-download-enable))
 #+end_src
+
+Pacote que define funções para manipular imagens externas.
 * Visual
 ** All the icons
 #+begin_src emacs-lisp
 (use-package all-the-icons
-    :ensure t)
+    :straight t)
 #+end_src
+
 Autoexplicativo.
 ** Tema
 #+begin_src emacs-lisp
   (use-package darkokai-theme
-    :ensure t
+    :straight t
     :config
     (load-theme 'darkokai t))
 #+end_src
+
 Seta o tema darkokai como padrão.
 ** Spaceline
 #+begin_src emacs-lisp
   (use-package spaceline
-    :ensure t
+    :straight t
     :config
     (spaceline-helm-mode)
     (spaceline-emacs-theme)
     (spaceline-toggle-minor-modes-off)
     (spaceline-toggle-projectile-root-on))
 #+end_src
+
 Spaceline com tema all the icons.
-
-Aparentemente o helm está causando memory leak, por hora, a seguinte config será setada para previnir isso:
-
-#+begin_src emacs-lisp
-  (setq helm-ff-keep-cached-candidates nil)
-#+end_src
 ** Dashboard
 #+begin_src emacs-lisp
   (use-package dashboard
-	  :ensure t
-	  :custom
-	  (dashboard-set-heading-icons t)
-	  (dashboard-set-file-icons t)
-	  (dashboard-startup-banner "~/.emacs.d/img/banner.png")
-	  (dashboard-center-content t)
-	  (dashboard-items '((recents . 10)
-						 (projects . 5)))
-	  :config
-	  (dashboard-setup-startup-hook))
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+    :straight t
+    :custom
+    (dashboard-startup-banner (concat user-emacs-directory "img/banner.png"))
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-center-content t)
+    (dashboard-items '((recents . 10)
+                            (projects . 5)))
+    :config
+    (dashboard-setup-startup-hook))
 #+end_src
+
 Lindo dashboard 
 *** Page break lines
 #+begin_src emacs-lisp
   (use-package page-break-lines
-    :ensure t
+    :straight t
     :init
-    (turn-on-page-break-lines-mode))
+    (global-page-break-lines-mode))
 #+end_src
+
 Substitui símbolo de quebras de linha por uma linha vazia.
 * Utilidades
+** Which-key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :straight t
+    :init
+    (which-key-mode))
+#+end_src
+** Flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :straight t
+    :init (global-flycheck-mode))
+#+end_src
+
+Syntax checker global.
+** Lsp
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :straight t
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :commands lsp
+    :hook
+    (python-mode . lsp))
+#+end_src
+
+*** Lsp-ui
+#+begin_src emacs-lisp
+  (use-package lsp-ui
+    :requires lsp-mode
+    :commands lsp-ui-mode)
+#+end_src
+
+** C/C++
+#+begin_src emacs-lisp
+  (use-package ccls
+    :straight t
+    :hook
+    ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp))))
+#+end_src
+
 ** Company
 #+begin_src emacs-lisp
   (use-package company
-    :ensure t
+    :straight t
     :custom
     (company-idle-delay 0)
     (company-minimum-prefix-length 3)
     :hook
     (prog-mode . company-mode))
 #+end_src
+
 Pacote de auto-complete
-
-*** Irony
-#+begin_src emacs-lisp
-  (use-package irony
-    :ensure t
-    :hook
-    (c++-mode . irony-mode)
-    (c-mode . irony-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package company-irony
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-irony))
-#+end_src
-
-*** Jedi
-#+begin_src emacs-lisp
-  (use-package company-jedi
-    :ensure t
-    :custom
-    (jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
-    (jedi:complete-on-dot t)
-    (jedi:use-shortcuts t)
-    :config
-    (defun config/enable-company-jedi ()
-      (add-to-list 'company-backends 'company-jedi))
-    :hook
-    (python-mode . jedi:setup)
-    (python-mode . config/enable-company-jedi))
-#+end_src
 ** Yasnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
-    :ensure t
+    :straight t
     :config
     (use-package yasnippet-snippets
-      :ensure t)
+      :straight t)
     (yas-reload-all)
     :hook
     (prog-mode . yas-minor-mode))
 #+end_src
+
 Snippet para frameworks.
 *** Lisp snippet
 #+begin_src emacs-lisp
 (use-package common-lisp-snippets
-    :ensure t)
+    :straight t)
 (add-hook 'lisp-mode-hook 'yas-minor-mode)
 #+end_src
 *** Emacs-Lisp snippet
 #+begin_src emacs-lisp
   (use-package el-autoyas
-    :ensure t
+    :straight t
     :hook
     (org-mode . el-autoyas-enable))
 #+end_src
@@ -303,23 +335,23 @@ Snippet para frameworks.
 #+end_src
 ** Company+Yasnippet
 #+begin_src emacs-lisp
-(defun check-expansion ()
-    (save-excursion
-      (if (looking-at "\\_>") t
-        (backward-char 1)
-        (if (looking-at "\\.") t
-          (backward-char 1)
-          (if (looking-at "->") t nil)))))
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (let ((yas-fallback-behavior nil))
+      (unless (yas-expand)
+        (call-interactively #'company-complete-common))))
 
-  (defun do-yas-expand ()
-    (let ((yas/fallback-behavior 'return-nil))
-      (yas/expand)))
+  (add-hook 'company-mode-hook (lambda ()
+    (substitute-key-definition 'company-complete-common
+                               'company-yasnippet-or-completion
+                               company-active-map)))
 #+end_src
+
 Funções para integração do company com yasnippet.
 ** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
-    :ensure t
+    :straight t
     :custom
     (projectile-mode t)
     :bind
@@ -327,44 +359,48 @@ Funções para integração do company com yasnippet.
 #+end_src
 ** Helm
 #+begin_src emacs-lisp
-	(use-package helm
-	  :ensure t
-	  :config
-	  (helm-mode 1)
-	  :bind
-	  ("C-x C-f" . 'helm-find-files)
-	  ("M-x" . 'helm-M-x)
-	  ("M-y" . 'helm-show-kill-ring)
-	  ("C-x b" . 'helm-mini))
+  (use-package helm
+    :straight t
+    :config
+    (helm-mode 1)
+    :bind
+    ("C-x C-f" . 'helm-find-files)
+    ("M-x" . 'helm-M-x)
+    ("M-y" . 'helm-show-kill-ring)
+    ("C-x b" . 'helm-mini))
 #+end_src
-Helm para funções de busca..
 
+Helm para funções de busca global.
 *** Helm-swooper
 #+begin_src emacs-lisp
   (use-package helm-swoop
-    :ensure t
+    :straight t
+    :requires helm
     :custom
     (helm-swoop-pre-input-function
      (lambda ()
        (if mark-active
            (buffer-substring-no-properties (mark) (point))
          "")))
-    :bind ("C-s" . helm-swoop))
+    :bind
+    ("C-s" . helm-swoop)
+    ("C-c h s" . helm-multi-swoop-all))
 #+end_src
 
 Pacote de busca de palavras.
 *** Helm-system-packages
 #+begin_src emacs-lisp
-    (use-package helm-system-packages
-      :ensure t)
+  (use-package helm-system-packages
+    :straight t
+    :requires helm)
 #+end_src
 
 Integração do helm com package managers.
-
 *** Helm-descbinds
 #+begin_src emacs-lisp
   (use-package helm-descbinds
-    :ensure t
+    :straight t
+    :requires helm
     :config
     (helm-descbinds-mode 1))
 #+end_src
@@ -372,51 +408,40 @@ Integração do helm com package managers.
 *** Helm-make
 #+begin_src emacs-lisp
   (use-package helm-make
-    :ensure t
+    :straight t
+    :requires helm
     :commands (helm-make helm-make-projectile))
 #+end_src
 
 Interface para criar makefiles através do Helm.
-
 *** Helm-icons
 #+begin_src emacs-lisp
   (use-package helm-icons
-    :ensure t
+    :straight t
+    :requires all-the-icons
     :config
-    (helm-icons-enable))
+    (helm-icons-enable)
+    :custom
+    (helm-icons-provider 'all-the-icons))
 #+end_src
 *** Helm-projectile
 #+begin_src emacs-lisp
   (use-package helm-projectile
-    :ensure t
+    :straight t
     :config
     (helm-projectile-on))
 #+end_src
-
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
-    :ensure t)
+    :straight t)
 #+end_src
+
 Pacote para integração com o git.
-** Flycheck
-#+begin_src emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode))
-#+end_src
-Detecção e highlightning de erros.
-
-*** C++ 
-#+begin_src emacs-lisp
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
-#+end_src
-
 ** Rainbow Delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
+    :straight t
     :hook 
     (prog-mode . rainbow-delimiters-mode))
 #+end_src
@@ -425,7 +450,7 @@ Pacote para highlight em escopos
 ** Undo Tree
 #+begin_src emacs-lisp
   (use-package undo-tree
-    :ensure t
+    :straight t
     :custom
     (undo-tree-visualizer-timestamps 1)
     :config
@@ -436,7 +461,7 @@ Pacote que define o histórico de alterações em uma árvore.
 ** Rainbow Mode
 #+begin_src emacs-lisp
   (use-package rainbow-mode
-    :ensure t
+    :straight t
     :hook
     (prog-mode . rainbow-mode)) 
 #+end_src
@@ -445,13 +470,13 @@ Pacote para hightlight de cores em código hexadecimal.
 ** Expand region
 #+begin_src emacs-lisp
   (use-package expand-region
-    :ensure t
+    :straight t
     :bind ("C-q" . er/expand-region))
 #+end_src
 ** Multiple-cursors
 #+begin_src emacs-lisp
   (use-package multiple-cursors
-    :ensure t
+    :straight t
     :bind ("C->" . 'mc/mark-next-like-this)
     :bind ("C-<" . 'mc/mark-previous-like-this)
     :bind ("C-c q" . 'mc/mark-all-like-this))
@@ -463,19 +488,20 @@ Faz uma boa sinergia com o pacote expand-region.
 ** Switch-window
 #+begin_src emacs-lisp
   (use-package switch-window
-    :ensure t
+    :straight t
     :bind
     ("C-x o" . 'switch-window))
 #+end_src
 
-
 ** PDF tools
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :ensure t
+    :straight t
     :magic ("%PDF" . pdf-view-mode)
     :config
-    (pdf-tools-install :no-query))
+    (pdf-tools-install :no-query)
+    :hook
+    (pdf-view-mode . (lambda() (display-line-numbers-mode -1))))
 #+end_src
 
 Ferramenta para melhor visualização e controle de PDFs.
