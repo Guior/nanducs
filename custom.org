@@ -152,7 +152,6 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
 #+end_src
 
 Aumenta o tamanho dos previews do latex em arquivos org em 200%.
-
 ** Babel
 #+begin_src emacs-lisp
   (add-to-list 'org-src-lang-modes '("c++" . C++)) ;; alias for source
@@ -318,18 +317,37 @@ Syntax checker global.
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :straight t
+    :after (which-key)
     :init
     (setq lsp-keymap-prefix "C-c l")
+    :custom
+    (gc-cons-threshold 100000000)
+    (read-process-output-max (* 1024 1024))
+    (lsp-idle-delay 0.500)
     :commands lsp
     :hook
+    (lsp-mode . lsp-enable-which-key-integration)
     (python-mode . lsp))
 #+end_src
 
 *** Lsp-ui
 #+begin_src emacs-lisp
   (use-package lsp-ui
-    :requires lsp-mode
-    :commands lsp-ui-mode)
+    :straight t
+    :after lsp-mode
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-sideline-show-diagnostics t)
+    (lsp-ui-sideline-show-code-actions t)
+    (lsp-ui-doc-enable t))
+#+end_src
+
+*** Helm-lsp
+#+begin_src emacs-lisp
+  (use-package helm-lsp
+    :straight t
+    :after (lsp-mode helm)
+    :commands helm-lsp-workspace-symbol)
 #+end_src
 
 ** C/C++
@@ -338,7 +356,10 @@ Syntax checker global.
     :ensure-system-package ccls
     :straight t
     :hook
-    ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp))))
+    ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
+    :custom
+    (lsp-clients-clangd-args '("-j=4" "--background-index" "-log=error"))
+    (lsp-prefer-flymake nil))
 #+end_src
 
 ** Company
@@ -569,4 +590,5 @@ Faz uma boa sinergia com o pacote expand-region.
 #+end_src
 
 Ferramenta para melhor visualização e controle de PDFs.
+
 
