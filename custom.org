@@ -1,4 +1,7 @@
-﻿* Geral
+﻿#+title: Configurações
+#+startup: content
+
+* Geral
 ** Use system package
 #+begin_src emacs-lisp
   (use-package use-package-ensure-system-package
@@ -274,11 +277,12 @@ Spaceline com tema all the icons.
     :straight t
     :custom
     (dashboard-startup-banner (concat user-emacs-directory "img/banner.png"))
+    (dashboard-set-init-info t)
     (dashboard-set-heading-icons t)
     (dashboard-set-file-icons t)
     (dashboard-center-content t)
     (dashboard-items '((recents . 10)
-                            (projects . 5)))
+                       (projects . 5)))
     :config
     (dashboard-setup-startup-hook))
 #+end_src
