@@ -11,16 +11,6 @@
 Garante que dependências sejam cumpridas para que determinado pacote
 seja carregado.
 
-** Terminal
-#+begin_src emacs-lisp
-  (defvar terminalzito "/bin/zsh")
-  (defadvice ansi-term (before force-zsh)
-	(interactive (list terminalzito)))
-  (ad-activate 'ansi-term)
-#+end_src
-
-Definindo o ZSH como interpretador padrão para o =ansi-term=.
-
 ** Images
 #+begin_src emacs-lisp
   (add-hook 'image-mode-hook '(lambda () (auto-revert-mode)))
@@ -132,16 +122,6 @@ Agrupa todos os autosaves em uma pasta só, por critérios organizacionais.
   (global-set-key (kbd "C-x j") 'kill-buffer-and-window)
 #+end_src
 
-** Abrir terminal 
-#+begin_src emacs-lisp
-  (defun split-and-open-terminal () 
-      (interactive)
-      (call-interactively 'split-window-right)
-      (call-interactively 'other-window)
-      (call-interactively 'ansi-term))
-  (global-set-key (kbd "C-x t") 'split-and-open-terminal)
-#+end_src
-
 * Org
 ** Configs
 *** Org indent mode
@@ -167,16 +147,12 @@ Aumenta o tamanho dos previews do latex em arquivos org em 200%.
      (ditaa . t)
      (C . t))) ;; C also adds C++ and D
 #+end_src
-
-** Org Bullets
+** Org superstar
 #+begin_src emacs-lisp
-  (use-package org-bullets
-      :straight t
-      :hook
-      (org-mode . (lambda () (org-bullets-mode))))
+  (use-package org-superstar
+    :straight t
+    :hook (org-mode . org-superstar-mode))
 #+end_src
-
-Bullets para deixas o org mode mais bonito.
 
 ** Minted
 #+begin_src emacs-lisp
@@ -195,6 +171,7 @@ Define Minted como pacote padrão para export de códigos, substituindo verbatim
   (use-package plantuml-mode
     :ensure-system-package plantuml
     :straight t
+    :defer t
     :custom
     (org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
     (plantuml-default-exec-mode 'jar)
@@ -217,6 +194,7 @@ Define Minted como pacote padrão para export de códigos, substituindo verbatim
 #+begin_src emacs-lisp
   (use-package org-roam
     :straight t
+    :defer t
     :custom
     (org-roam-directory "~/Dropbox/org-roam")
     :hook
@@ -228,6 +206,7 @@ Define Minted como pacote padrão para export de códigos, substituindo verbatim
 #+begin_src emacs-lisp
   (use-package org-download
     :straight t
+    :defer t
     :init
     (org-download-enable)
     :custom
@@ -239,6 +218,19 @@ Define Minted como pacote padrão para export de códigos, substituindo verbatim
 
 Pacote que define funções para manipular imagens externas.
 
+** Org-reveal
+#+begin_src emacs-lisp
+  (use-package org-reveal
+    :straight t
+    :defer t
+    :custom
+    (org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
+#+end_src
+*** Htmlize
+#+begin_src emacs-lisp
+  (use-package htmlize
+    :straight t)
+#+end_src
 * Visual
 ** All the icons
 #+begin_src emacs-lisp
@@ -277,7 +269,6 @@ Spaceline com tema all the icons.
     :straight t
     :custom
     (dashboard-startup-banner (concat user-emacs-directory "img/banner.png"))
-    (dashboard-set-init-info t)
     (dashboard-set-heading-icons t)
     (dashboard-set-file-icons t)
     (dashboard-center-content t)
@@ -312,6 +303,7 @@ Substitui símbolo de quebras de linha por uma linha vazia.
 #+begin_src emacs-lisp
   (use-package flycheck
     :straight t
+    :defer t
     :init (global-flycheck-mode))
 #+end_src
 
@@ -321,13 +313,13 @@ Syntax checker global.
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :straight t
+    :defer t
     :after (which-key)
     :init
     (setq lsp-keymap-prefix "C-c l")
     :custom
     (gc-cons-threshold 100000000)
     (read-process-output-max (* 1024 1024))
-    (lsp-idle-delay 0.500)
     :commands lsp
     :hook
     (lsp-mode . lsp-enable-which-key-integration)
@@ -338,6 +330,7 @@ Syntax checker global.
 #+begin_src emacs-lisp
   (use-package lsp-ui
     :straight t
+    :defer t
     :after lsp-mode
     :commands lsp-ui-mode
     :custom
@@ -350,6 +343,7 @@ Syntax checker global.
 #+begin_src emacs-lisp
   (use-package helm-lsp
     :straight t
+    :defer t
     :after (lsp-mode helm)
     :commands helm-lsp-workspace-symbol)
 #+end_src
@@ -359,6 +353,7 @@ Syntax checker global.
   (use-package ccls
     :ensure-system-package ccls
     :straight t
+    :defer t
     :hook
     ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
     :custom
@@ -370,6 +365,7 @@ Syntax checker global.
 #+begin_src emacs-lisp
   (use-package company
     :straight t
+    :defer t
     :custom
     (company-idle-delay 0)
     (company-minimum-prefix-length 3)
@@ -383,6 +379,7 @@ Pacote de auto-complete.
 #+begin_src emacs-lisp
   (use-package yasnippet
     :straight t
+    :defer t
     :config
     (use-package yasnippet-snippets
       :straight t)
@@ -395,23 +392,19 @@ Snippet para frameworks.
 
 *** Lisp snippet
 #+begin_src emacs-lisp
-(use-package common-lisp-snippets
-    :straight t)
-(add-hook 'lisp-mode-hook 'yas-minor-mode)
+  (use-package common-lisp-snippets
+    :straight t
+    :defer t)
+  (add-hook 'lisp-mode-hook 'yas-minor-mode)
 #+end_src
 
 *** Emacs-Lisp snippet
 #+begin_src emacs-lisp
   (use-package el-autoyas
     :straight t
+    :defer t
     :hook
     (org-mode . el-autoyas-enable))
-#+end_src
-
-*** Javascript e React snippet 
-#+begin_src emacs-lisp
-  (use-package js-react-redux-yasnippets
-    :defer t)
 #+end_src
 
 ** Company+Yasnippet
@@ -517,7 +510,8 @@ Interface para criar makefiles através do Helm.
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
-    :straight t)
+    :straight t
+    :defer t)
 #+end_src
 
 Pacote para integração com o git.
@@ -526,6 +520,7 @@ Pacote para integração com o git.
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :straight t
+    :defer t
     :hook 
     (prog-mode . rainbow-delimiters-mode))
 #+end_src
@@ -582,10 +577,22 @@ Faz uma boa sinergia com o pacote expand-region.
     ("C-x o" . 'switch-window))
 #+end_src
 
+Pacote switch window exibe um label para indicar a window desejada.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c <left>")  'windmove-left)
+  (global-set-key (kbd "C-c <right>") 'windmove-right)
+  (global-set-key (kbd "C-c <up>")    'windmove-up)
+  (global-set-key (kbd "C-c <down>")  'windmove-down)
+#+end_src
+
+Adicionalmente, Wind Move também se encontra ativo.
+
 ** PDF tools
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :straight t
+    :defer t
     :magic ("%PDF" . pdf-view-mode)
     :config
     (pdf-tools-install :no-query)
@@ -595,4 +602,17 @@ Faz uma boa sinergia com o pacote expand-region.
 
 Ferramenta para melhor visualização e controle de PDFs.
 
+** Vterm
+#+begin_src emacs-lisp
+  (use-package vterm
+    :straight t
+    :defer t
+    :bind ("C-x t" . vterm-other-window))
+#+end_src
 
+** Move-text
+#+begin_src emacs-lisp
+  (use-package move-text
+    :straight t
+    :init (move-text-default-bindings))
+#+end_src
