@@ -13,6 +13,7 @@
 (setq package-enable-at-startup nil)
 
 (straight-use-package 'use-package)
+(straight-use-package 'org) 
 
 (org-babel-load-file (expand-file-name (concat user-emacs-directory "custom.org")))
 
@@ -42,7 +43,8 @@
 	 ("\\?\\?\\?+" . "#dc752f")))
  '(package-selected-packages
    '(flycheck lsp-ui vterm darkokai-theme beacon spaceline ewal-spacemacs-themes which-key use-package))
- '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e")))
+ '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
+ '(warning-suppress-log-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
