@@ -322,8 +322,7 @@ Syntax checker global.
     (read-process-output-max (* 1024 1024))
     :commands lsp
     :hook
-    (lsp-mode . lsp-enable-which-key-integration)
-    (python-mode . lsp))
+    (lsp-mode . lsp-enable-which-key-integration))
 #+end_src
 
 *** Lsp-ui
@@ -361,6 +360,43 @@ Syntax checker global.
     (lsp-prefer-flymake nil))
 #+end_src
 
+** Python
+#+begin_src emacs-lisp
+  (use-package lsp-jedi
+    :straight t
+    :ensure-system-package jedi-language-server
+    :config
+    (with-eval-after-load "lsp-mode"
+      (add-to-list 'lsp-disabled-clients 'pyls)
+      (add-to-list 'lsp-enabled-clients 'jedi)))
+#+end_src
+
+** Jupyter
+#+begin_src emacs-lisp
+  (use-package jupyter
+    :straight t
+    :defer t
+    :config
+    (add-to-list 'load-path "/usr/bin/jupyter"))
+#+end_src
+
+** Java
+#+begin_src emacs-lisp
+  (use-package lsp-java
+    :straight t
+    :hook (java-mode . lsp)
+    :config
+    (add-to-list 'lsp-enabled-clients 'jdtls))
+#+end_src
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :mode
+    ("README\\.md\\'" . gfm-mode)
+    ("\\.\\(md\\|markdown\\|mkd\\)\\'" . markdown-mode)
+    :custom
+    (markdown-command "multimarkdown"))
+#+end_src
 ** Company
 #+begin_src emacs-lisp
   (use-package company
@@ -533,6 +569,7 @@ Pacote para highlight em escopos
     :straight t
     :custom
     (undo-tree-visualizer-timestamps 1)
+    (undo-tree-auto-save-history nil)
     :config
     (global-undo-tree-mode))
 #+end_src
