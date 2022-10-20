@@ -268,7 +268,7 @@ Spaceline com tema all the icons.
   (use-package dashboard
     :straight t
     :custom
-    (dashboard-startup-banner (concat user-emacs-directory "img/banner.png"))
+    (dashboard-startup-banner 'logo)
     (dashboard-set-heading-icons t)
     (dashboard-set-file-icons t)
     (dashboard-center-content t)
@@ -277,8 +277,6 @@ Spaceline com tema all the icons.
     :config
     (dashboard-setup-startup-hook))
 #+end_src
-
-Lindo dashboard.
 
 *** Page break lines
 #+begin_src emacs-lisp
@@ -355,6 +353,8 @@ Syntax checker global.
     :defer t
     :hook
     ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
+    :config
+    (add-to-list 'lsp-enabled-clients 'ccls)
     :custom
     (lsp-clients-clangd-args '("-j=4" "--background-index" "-log=error"))
     (lsp-prefer-flymake nil))
